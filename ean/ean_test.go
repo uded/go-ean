@@ -1,7 +1,9 @@
 package ean
 
-import "testing"
-import "errors"
+import (
+	"errors"
+	"testing"
+)
 
 func TestValid(t *testing.T) {
 	invalids := []string{"", "abc", "1111111111111", "978193435673912123123"}
