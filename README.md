@@ -42,7 +42,7 @@ To check the validity of a string as EAN-8, EAN-13 or UPC use `Valid`:
     fmt.Printf("General validation 629104150021, valid %t\n", valid)
     // Prints "General validation 629104150021, valid true"
 
-See [examples](../blob/master/example/main.go) for complete working application.
+See [examples](../master/example/main.go) for complete working application.
 
 ## Changes from original library
 
