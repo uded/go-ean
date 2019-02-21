@@ -9,11 +9,6 @@ func Valid(ean string) bool {
 	return ValidEan8(ean) || ValidEan13(ean) || ValidUpc(ean)
 }
 
-func ValidUpc(upc string) bool {
-	return validCode(upc, 12)
-
-}
-
 func ValidEan8(ean string) bool {
 	return validCode(ean, 8)
 }
@@ -22,12 +17,22 @@ func ValidEan13(ean string) bool {
 	return validCode(ean, 13)
 }
 
+func ValidUpc(upc string) bool {
+	return validCode(upc, 12)
+
+}
+
 func validCode(ean string, size int) bool {
+	if len(ean) != size {
+		return false
+	}
 	checksum, err := checksum(ean, size)
 
 	return err == nil && strconv.Itoa(checksum) == ean[size-1:size]
 }
 
+// Calculate checksum for the EAN code.
+// The ean string might be of length 7 or 8. If it has length 8 then the last checksum digit is ignored.
 func ChecksumEan8(ean string) (int, error) {
 	return checksum(ean, 8)
 }
@@ -41,7 +46,7 @@ func ChecksumUpc(upc string) (int, error) {
 }
 
 func checksum(ean string, size int) (int, error) {
-	if len(ean) != size {
+	if len(ean) != size && len(ean) != size - 1 {
 		return -1, fmt.Errorf("incorrect ean %v to compute a checksum", ean)
 	}
 

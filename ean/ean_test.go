@@ -31,21 +31,13 @@ func TestChecksumEan8(t *testing.T) {
 		{"0x111111", -1, errors.New("contains non-digit: 'x'")},
 		{"96385074", 4, nil}, // Wikipedia EAN-8 example
 		{"73513537", 7, nil},
+
+		// The last checksum digit is not required in the ean string because it should be calculated
+		{"9638507", 4, nil},
+		{"7351353", 7, nil},
 	}
 	for _, v := range tests {
 		assertChecksum(t, ChecksumEan8, v.ean, v.expected, v.err)
-	}
-}
-
-func assertChecksum(t *testing.T, f func(string) (int, error), ean string, expectedChecksum int, err error) {
-	x, e := f(ean)
-
-	if e != nil && err != nil && e.Error() != err.Error() {
-		t.Errorf("Checksum(%v) returned error %v, want %v", ean, e, err)
-	}
-
-	if x != expectedChecksum {
-		t.Errorf("Checksum(%v) = %v, want %v", ean, x, expectedChecksum)
 	}
 }
 
@@ -64,6 +56,12 @@ func TestChecksumEan13(t *testing.T) {
 		{"9780306406157", 7, nil}, // Wikipedia ISBN-13 example
 		{"5711489018800", 0, nil},
 		{"5711489018824", 4, nil},
+
+		// The last checksum digit is not required in the ean string because it should be calculated
+		{"629104150021", 3, nil},
+		{"978030640615", 7, nil},
+		{"571148901880", 0, nil},
+		{"571148901882", 4, nil},
 	}
 	for _, v := range tests {
 		assertChecksum(t, ChecksumEan13, v.ean, v.expected, v.err)
@@ -72,4 +70,17 @@ func TestChecksumEan13(t *testing.T) {
 
 func TestChecksumUPC(t *testing.T) {
 	assertChecksum(t, ChecksumUpc, "012345678905", 5, nil)
+	assertChecksum(t, ChecksumUpc, "01234567890", 5, nil)
+}
+
+func assertChecksum(t *testing.T, f func(string) (int, error), ean string, expectedChecksum int, err error) {
+	x, e := f(ean)
+
+	if e != nil && err != nil && e.Error() != err.Error() {
+		t.Errorf("Checksum(%v) returned error %v, want %v", ean, e, err)
+	}
+
+	if x != expectedChecksum {
+		t.Errorf("Checksum(%v) = %v, want %v", ean, x, expectedChecksum)
+	}
 }

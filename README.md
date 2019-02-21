@@ -1,41 +1,62 @@
+[![Build Status](https://travis-ci.com/victorsmirnov/go-ean.svg?branch=master)](https://travis-ci.com/victorsmirnov/go-ean)
+
 go-ean
 ======
 
-go-ean is a simple utility library for calculating EAN checksums and validating EAN-8, EAN-13 and UPC numbers.
+go-ean is a simple utility library for calculating EAN checksum and validating EAN-8, EAN-13 and UPC numbers.
+This project is a fork of the project https://github.com/nicholassm/go-ean adopted for the new [Go 1.11 Modules].
 
 ## Installation
 
-    go get github.com/nicholassm/go-ean/ean
+Import the package in the application code. For example
+
+    import "github.com/victorsmirnov/go-ean/ean"
+
+When you build the project using `go buid` it will install the latest package version automatically
+and update `go.mod` and `go.sum` files.
+
+Example output from the `go buid` command:
+
+    $ go build main/*
+    go: finding github.com/victorsmirnov/go-ean/ean latest
+
+If you do not use 1.11 Modules you can still install the package using `go get` command
+
+    go get github.com/victorsmirnov/go-ean/ean
 
 ## Usage
 
 To calculate a checksum use the `ChecksumEan8`, `ChecksumEan13` or `ChecksumUpc` functions:
 
-    package main
-
-    import "github.com/nicholassm/go-ean/ean"
-
-    func main() {
-      c, err := ean.ChecksumUpc("012345678905")
-      println(c)  // Prints 5
-
-      c, err := ean.ChecksumEan13("629104150021")
-      println(c)  // Prints 3
-
-      c2, err2 := ean.ChecksumEan8("7351353")
-      println(c2) // Prints 7
+    upcStr := "012345678905"
+    if c, err := ean.ChecksumUpc(upcStr); err != nil {
+        fmt.Printf("Checksum fail, error %+v\n", err)
+    } else {
+        fmt.Printf("UPC %s, checksum %d\n", upcStr, c)
+        // Prints "UPC 012345678905, checksum 5"
     }
 
 To check the validity of a string as EAN-8, EAN-13 or UPC use `Valid`:
 
-    println(ean.Valid("96385074")) // Prints true
-    println(ean.Valid("abc"))      // Prints false
+    valid = ean.Valid("012345678905")
+    fmt.Printf("General validation 629104150021, valid %t\n", valid)
+    // Prints "General validation 629104150021, valid true"
+
+See [examples](../blob/master/example/main.go) for complete working application.
+
+## Changes from original library
+
+In the original library `nicholassm/go-ean` the `checksum()` function expected the `ean` string argument
+to include the last check digit. In my version the string may not have the last digit.
+
+[Go 1.11 Modules]: https://github.com/golang/go/wiki/Modules
 
 ## License
 
 (The MIT License)
 
 Copyright (c) 2013 Nicholas Schultz-Møller
+Copyright (c) 2019 Victor Smirnov
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
