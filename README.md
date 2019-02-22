@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/victorsmirnov/go-ean.svg?branch=master)](https://travis-ci.com/victorsmirnov/go-ean)
+[![CodeFactor](https://www.codefactor.io/repository/github/victorsmirnov/go-ean/badge)](https://www.codefactor.io/repository/github/victorsmirnov/go-ean)
 
 go-ean
 ======
