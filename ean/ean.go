@@ -6,7 +6,7 @@ import (
 )
 
 func Valid(ean string) bool {
-	return ValidEan8(ean) || ValidEan13(ean) || ValidUpc(ean)
+	return ValidEan8(ean) || ValidEan13(ean) || ValidGTIN14(ean) || ValidUpc(ean)
 }
 
 func ValidEan8(ean string) bool {
@@ -17,9 +17,12 @@ func ValidEan13(ean string) bool {
 	return validCode(ean, 13)
 }
 
+func ValidGTIN14(gtin string) bool {
+	return validCode(gtin, 14)
+}
+
 func ValidUpc(upc string) bool {
 	return validCode(upc, 12)
-
 }
 
 func validCode(ean string, size int) bool {
@@ -41,12 +44,16 @@ func ChecksumEan13(ean string) (int, error) {
 	return checksum(ean, 13)
 }
 
+func ChecksumGTIN14(gtin string) (int, error) {
+	return checksum(gtin, 14)
+}
+
 func ChecksumUpc(upc string) (int, error) {
 	return checksum(upc, 12)
 }
 
 func checksum(ean string, size int) (int, error) {
-	if len(ean) != size && len(ean) != size - 1 {
+	if len(ean) != size && len(ean) != size-1 {
 		return -1, fmt.Errorf("incorrect ean %v to compute a checksum", ean)
 	}
 

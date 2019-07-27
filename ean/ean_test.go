@@ -68,19 +68,40 @@ func TestChecksumEan13(t *testing.T) {
 	}
 }
 
+func TestChecksumGTIN14(t *testing.T) {
+	tests := []struct {
+		gtin     string
+		expected int
+		err      error
+	}{
+		{"0", -1, errors.New("incorrect ean 0 to compute a checksum")},
+		{"000000000000000", -1, errors.New("incorrect ean 000000000000000 to compute a checksum")},
+		{"0x11111111111", -1, errors.New("contains non-digit: 'x'")},
+		{"00735858141529", 9, nil},
+		{"02055216002865", 5, nil},
+		{"18710103517198", 8, nil},
+		{"68710103517193", 3, nil},
+	}
+	for _, v := range tests {
+		assertChecksum(t, ChecksumGTIN14, v.gtin, v.expected, v.err)
+	}
+}
+
 func TestChecksumUPC(t *testing.T) {
 	assertChecksum(t, ChecksumUpc, "012345678905", 5, nil)
 	assertChecksum(t, ChecksumUpc, "01234567890", 5, nil)
 }
 
 func assertChecksum(t *testing.T, f func(string) (int, error), ean string, expectedChecksum int, err error) {
-	x, e := f(ean)
+	t.Run(ean, func(t *testing.T) {
+		x, e := f(ean)
 
-	if e != nil && err != nil && e.Error() != err.Error() {
-		t.Errorf("Checksum(%v) returned error %v, want %v", ean, e, err)
-	}
+		if e != nil && err != nil && e.Error() != err.Error() {
+			t.Errorf("Checksum(%v) returned error %v, want %v", ean, e, err)
+		}
 
-	if x != expectedChecksum {
-		t.Errorf("Checksum(%v) = %v, want %v", ean, x, expectedChecksum)
-	}
+		if x != expectedChecksum {
+			t.Errorf("Checksum(%v) = %v, want %v", ean, x, expectedChecksum)
+		}
+	})
 }
