@@ -1,1 +1,3 @@
-module github.com/victorsmirnov/go-ean
+module github.com/uded/go-ean
+
+go 1.12
